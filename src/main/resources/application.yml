@@ -23,3 +23,7 @@ rabbitmq:
   max:
     concurrent:
       consumers: 1
+
+#swagger settings
+application:
+  version: v1
