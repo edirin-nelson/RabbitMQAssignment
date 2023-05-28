@@ -5,3 +5,21 @@ spring:
       host: localhost
       port: 27017
       database: your-database-name
+
+#RabbitMQ settings
+rabbitmq:
+  host: localhost
+  virtualhost: /
+  port: 15672
+  username: guest
+  password: guest
+  exchange: rabbitmq.exchange
+  queue: work-items
+  routingkey: rabbitmq.routingkey
+  reply:
+    timeout: 60000
+  concurrent:
+    consumers: 1
+  max:
+    concurrent:
+      consumers: 1
