@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.oneworldaccuracy.model.WorkItem;
 import org.oneworldaccuracy.service.WorkItemService;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,10 +11,8 @@ import org.springframework.stereotype.Component;
 public class WorkItemConsumer {
 
     private WorkItemService workItemService;
-    @Value("${rabbitmq.queue}")
-    private String queueName;
 
-    @RabbitListener(queues = "${rabbitmq.queue}")
+    @RabbitListener(queues = "work-items")
     public void processWorkItem(WorkItem workItem) {
         workItemService.processWorkItem(workItem);
     }

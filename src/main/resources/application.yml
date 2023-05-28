@@ -4,7 +4,7 @@ spring:
     mongodb:
       host: localhost
       port: 27017
-      database: your-database-name
+      database: work-itemDB
 
 #RabbitMQ settings
 rabbitmq:

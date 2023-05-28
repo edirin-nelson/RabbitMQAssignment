@@ -87,7 +87,7 @@ public class RabbitMQConfig {
 
     //RabbitTemplate sends message to the queue
     @Bean
-    public AmqpTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+    public AmqpTemplate rabbitTemplates(ConnectionFactory connectionFactory) {
         final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setDefaultReceiveQueue(queueName);
         rabbitTemplate.setMessageConverter(jsonMessageConverter());
