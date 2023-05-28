@@ -1,0 +1,62 @@
+Your task is to implement a Spring Boot application that processes and reports work items.
+A work item is a number between 1 and 10.
+The application should be able to handle a large number of work items without blocking,
+so the items should be processed asynchronously utilizing a producer-consumer architecture.
+A typical workload is the range of millions of work items.
+The work items and their processing results should be stored in a MongoDB database.
+Finally, a web page should be created to display the report.
+
+Requirements:
+
+1. Web Endpoints:
+   - Implement the following endpoints with JSON input and output:
+     - Create item: Receives the work item value and returns a unique ID for the newly created work item.
+     - Get item: Receives a work item ID and returns the work item value, processed status, and result value (null if not yet processed).
+     - Delete item: Receives a work item ID and deletes the item if it has not been processed yet.
+     - Get report: Returns the report page information (see requirement #5) in JSON format.
+
+2. Work Item Processing:
+   - Implement the logic to process work items. Processing a work item involves calculating the square of its value.
+   - Introduce a simulated delay in the code to mimic the processing time. The delay should be calculated as <work item value> * 10 ms.
+
+3. Producer-Consumer Architecture:
+   - Design and implement a producer component to receive work items and enqueue them for processing.
+   - Use RabbitMQ messaging platform.
+   - Implement a consumer component to retrieve work items from RabbitMQ and process them concurrently. Ensure that a maximum of 2 work items are processed simultaneously.
+   - Utilize RabbitMQ as the messaging platform to facilitate communication between the producer and consumer components.
+
+4. Database Storage:
+   - Store the work item values and their corresponding processing results in a MongoDB database.
+   - Design an appropriate data model to represent work items and their processing status.
+   - Use Spring Data MongoDB or similar libraries to interact with the database.
+
+5. Reporting:
+   - Create a single web page that displays the report for the work items.
+   - For each work item value, show the total number of items with that value and the number of processed items for that value.
+   - Include a refresh button on the web page to update the report with the latest data.
+
+Bonus Feature:
+   - Implement a button on the report page to save the report as a PDF using JasperReports.
+   - When the button is clicked, generate the current report as a PDF file and allow the user to download it.
+
+Unit Testing:
+   - Provide minimal unit test coverage for the implemented functionalities.
+   - Write unit tests to verify the correctness of work item processing, database operations, and report generation.
+
+Build and Run Instructions:
+   - Provide detailed instructions or scripts on how to build and run the entire application, including any required infrastructure.
+   - Document any external dependencies and configurations needed for successful execution.
+
+Test Case:
+   - Create 1000 work items with random values.
+   - Pick an open-source tool of your choice to create the work items via the API.
+   - Describe how to use the tool to queue the items.
+ 
+Guidelines:
+- Utilize the Spring Boot framework along with any other suitable libraries, frameworks, or tools from the Spring ecosystem.
+- Follow best practices in software development, including code organization, modularity, error handling, and documentation.
+- Write clean and maintainable code and include appropriate comments where necessary.
+
+If you have any further questions or need clarification on the requirements, feel free to ask. Good luck with your implementation!
+
+
