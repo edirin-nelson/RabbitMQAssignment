@@ -22,7 +22,8 @@ Requirements:
 3. Producer-Consumer Architecture:
    - Design and implement a producer component to receive work items and enqueue them for processing.
    - Use RabbitMQ messaging platform.
-   - Implement a consumer component to retrieve work items from RabbitMQ and process them concurrently. Ensure that a maximum of 2 work items are processed simultaneously.
+   - Implement a consumer component to retrieve work items from RabbitMQ and process them concurrently.
+   Ensure that a maximum of 2 work items are processed simultaneously.
    - Utilize RabbitMQ as the messaging platform to facilitate communication between the producer and consumer components.
 
 4. Database Storage:

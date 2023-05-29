@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service
 @AllArgsConstructor
@@ -20,26 +22,29 @@ public class WorkItemService {
 
     private WorkItemRepository workItemRepository;
     private WorkItemProducer workItemProducer;
-
+    private final ExecutorService executorService = Executors.newFixedThreadPool(2);
 
     @Async
     public void processWorkItem(WorkItem workItem) {
-        // Calculate the square of the work item value
-        int value = workItem.getValue();
-        int result = value * value;
+        executorService.execute(() -> {
+            // Calculate the square of the work item value
+            int value = workItem.getValue();
+            int result = value * value;
 
-        // Introduce a simulated delay
-        try {
-            Thread.sleep(value * 10);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+            // Introduce a simulated delay
+            try {
+                Thread.sleep(value * 10);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
 
-        // Update the work item with the processing result
-        workItem.setResult(result);
-        workItem.setProcessed(true);
-        workItemRepository.save(workItem);
+            // Update the work item with the processing result
+            workItem.setResult(result);
+            workItem.setProcessed(true);
+            workItemRepository.save(workItem);
+        });
     }
+
 
 
     public String createWorkItem(int value) {
