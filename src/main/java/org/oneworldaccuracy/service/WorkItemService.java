@@ -22,27 +22,24 @@ public class WorkItemService {
 
     private WorkItemRepository workItemRepository;
     private WorkItemProducer workItemProducer;
-    private final ExecutorService executorService = Executors.newFixedThreadPool(2);
 
     @Async
     public void processWorkItem(WorkItem workItem) {
-        executorService.execute(() -> {
-            // Calculate the square of the work item value
-            int value = workItem.getValue();
-            int result = value * value;
+        // Calculate the square of the work item value
+        int value = workItem.getValue();
+        int result = value * value;
 
-            // Introduce a simulated delay
-            try {
-                Thread.sleep(value * 10);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+        // Introduce a simulated delay
+        try {
+            Thread.sleep(value * 10L);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
 
-            // Update the work item with the processing result
-            workItem.setResult(result);
-            workItem.setProcessed(true);
-            workItemRepository.save(workItem);
-        });
+        // Update the work item with the processing result
+        workItem.setResult(result);
+        workItem.setProcessed(true);
+        workItemRepository.save(workItem);
     }
 
 
