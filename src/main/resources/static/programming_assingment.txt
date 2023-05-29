@@ -50,7 +50,7 @@ Build and Run Instructions:
 Test Case:
    - Create 1000 work items with random values.
    - Pick an open-source tool of your choice to create the work items via the API.
-   - Describe how to use the tool to queue the items.
+***   - Describe how to use the tool to queue the items.
  
 Guidelines:
 - Utilize the Spring Boot framework along with any other suitable libraries, frameworks, or tools from the Spring ecosystem.

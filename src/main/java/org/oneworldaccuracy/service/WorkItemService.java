@@ -6,7 +6,6 @@ import org.oneworldaccuracy.dto.ReportResponse;
 import org.oneworldaccuracy.model.WorkItem;
 import org.oneworldaccuracy.producer.WorkItemProducer;
 import org.oneworldaccuracy.repository.WorkItemRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -42,12 +41,6 @@ public class WorkItemService {
         workItemRepository.save(workItem);
     }
 
-//    public void createWorkItem(int value) {
-//        WorkItem workItem = new WorkItem(value);
-//        workItemRepository.save(workItem);
-//
-//        workItemProducer.sendWorkItem(workItem);
-//    }
 
     public String createWorkItem(int value) {
         if (value < 1 || value > 10) {
@@ -55,6 +48,7 @@ public class WorkItemService {
         }
         WorkItem workItem = new WorkItem(value);
         workItemRepository.save(workItem);
+        workItemProducer.sendWorkItem(workItem);
         return workItem.getId();
     }
 
