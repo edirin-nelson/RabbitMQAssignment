@@ -1,8 +1,7 @@
 package org.oneworldaccuracy.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
@@ -19,6 +18,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.ErrorHandler;
 
+@Slf4j
 @EnableRabbit
 @Configuration
 public class RabbitMQConfig {
@@ -114,6 +114,7 @@ public class RabbitMQConfig {
         return factory;
     }
 
+    //The errorHandler is used to return some user-friendly Error Object when an exception is thrown by the listener.
     @Bean
     public ErrorHandler errorHandler() {
         return new ConditionalRejectingErrorHandler(new MyFatalExceptionStrategy());
@@ -121,13 +122,11 @@ public class RabbitMQConfig {
 
     public static class MyFatalExceptionStrategy extends ConditionalRejectingErrorHandler.DefaultExceptionStrategy {
 
-        private final Logger logger = LogManager.getLogger(getClass());
-
         @Override
         public boolean isFatal(Throwable t) {
             if (t instanceof ListenerExecutionFailedException) {
                 ListenerExecutionFailedException lefe = (ListenerExecutionFailedException) t;
-                logger.error("Failed to process inbound message from queue "
+                log.error("Failed to process inbound message from queue "
                         + lefe.getFailedMessage().getMessageProperties().getConsumerQueue()
                         + "; failed message: " + lefe.getFailedMessage(), t);
             }

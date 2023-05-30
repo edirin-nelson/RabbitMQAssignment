@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import org.oneworldaccuracy.model.WorkItem;
 import org.oneworldaccuracy.service.WorkItemService;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 @AllArgsConstructor
 public class WorkItemConsumer {
 

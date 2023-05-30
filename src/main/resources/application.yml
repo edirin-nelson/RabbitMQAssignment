@@ -13,9 +13,9 @@ rabbitmq:
   port: 15672
   username: guest
   password: guest
-  exchange: rabbitmq.exchange
+  exchange: work-item-exchange
   queue: work-items
-  routingkey: rabbitmq.routingkey
+  routingkey: work-item-routingkey
   reply:
     timeout: 60000
   concurrent:

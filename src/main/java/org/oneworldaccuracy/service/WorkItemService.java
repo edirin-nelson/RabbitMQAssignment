@@ -9,12 +9,11 @@ import org.oneworldaccuracy.repository.WorkItemRepository;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @Service
 @AllArgsConstructor
@@ -104,11 +103,10 @@ public class WorkItemService {
         parameters.put("processedCounts", report.getProcessedCounts());
 
         // Load the report template file
-        ClassLoader classLoader = getClass().getClassLoader();
-        String reportTemplatePath = classLoader.getResource("reports/work-item-report-template.jrxml").getFile();
+        InputStream reportTemplateStream = getClass().getClassLoader().getResourceAsStream("reports/work-item-report-template.jrxml");
 
         // Compile the report template and generate a JasperReport object
-        JasperReport jasperReport = JasperCompileManager.compileReport(reportTemplatePath);
+        JasperReport jasperReport = JasperCompileManager.compileReport(reportTemplateStream);
 
         // Create an empty JRDataSource (JasperReports data source)
         JRDataSource dataSource = new JREmptyDataSource();
@@ -116,6 +114,7 @@ public class WorkItemService {
         // Fill the JasperReport with data and return the generated JasperPrint object
         return JasperFillManager.fillReport(jasperReport, parameters, dataSource);
     }
+
 
     public byte[] exportToPdf(JasperPrint jasperPrint) throws Exception {
         // Export the JasperPrint object to a PDF byte array
