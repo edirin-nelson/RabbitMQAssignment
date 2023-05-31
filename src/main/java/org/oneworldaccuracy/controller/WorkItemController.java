@@ -3,7 +3,6 @@ package org.oneworldaccuracy.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import jakarta.annotation.Resource;
-import jakarta.xml.bind.JAXBException;
 import lombok.AllArgsConstructor;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.oneworldaccuracy.dto.*;
@@ -50,10 +49,11 @@ public class WorkItemController {
         return workItemService.deleteWorkItem(id);
     }
 
-    @GetMapping(value = "/report", produces = MediaType.APPLICATION_XML_VALUE)
-    public ResponseEntity<String> getReport() throws JAXBException {
-        String xmlData = workItemService.generateReportXml();
-        return ResponseEntity.ok(xmlData);
+    @GetMapping("/report")
+    @ApiOperation(value = "Get work item report", notes = "Retrieves a report containing item values, item counts, and processed counts.")
+    public ResponseEntity<ReportResponse> getReport() {
+        ReportResponse response = workItemService.generateReport();
+        return ResponseEntity.ok(response);
     }
 
 //    @GetMapping("/get-report")

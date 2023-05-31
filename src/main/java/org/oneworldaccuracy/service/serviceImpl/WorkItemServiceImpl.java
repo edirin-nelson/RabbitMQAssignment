@@ -1,8 +1,5 @@
 package org.oneworldaccuracy.service.serviceImpl;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Marshaller;
 import lombok.AllArgsConstructor;
 import net.sf.jasperreports.engine.*;
 import org.oneworldaccuracy.dto.ReportResponse;
@@ -16,7 +13,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.io.StringWriter;
 import java.net.URI;
 import java.util.*;
 
@@ -125,22 +121,6 @@ public class WorkItemServiceImpl implements WorkItemService {
 
         // Create and return a new ReportResponse with the item values, item counts, and processed counts
         return new ReportResponse(workItemValues, itemCounts, processedCounts);
-    }
-
-    @Override
-    public String generateReportXml() throws JAXBException {
-        ReportResponse reportResponse = generateReport();
-
-        // Convert ReportResponse to XML using JAXB
-        JAXBContext context = JAXBContext.newInstance(ReportResponse.class);
-        Marshaller marshaller = context.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-        StringWriter writer = new StringWriter();
-        marshaller.marshal(reportResponse, writer);
-
-        // Return the XML content as a string
-        return writer.toString();
     }
 
     @Override
