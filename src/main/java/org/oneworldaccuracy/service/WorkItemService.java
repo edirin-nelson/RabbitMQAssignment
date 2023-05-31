@@ -3,7 +3,6 @@ package org.oneworldaccuracy.service;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.oneworldaccuracy.dto.ReportResponse;
 import org.oneworldaccuracy.dto.WorkItemResponse;
-import org.oneworldaccuracy.dto.WorkItemResult;
 import org.oneworldaccuracy.model.WorkItem;
 import org.springframework.scheduling.annotation.Async;
 
@@ -11,7 +10,7 @@ public interface WorkItemService {
     @Async
     WorkItem processWorkItem(WorkItem workItem);
 
-    WorkItemResult CreateWorkItem(int value);
+    String createWorkItem(int value);
 
     WorkItemResponse getWorkItemById(String id);
 

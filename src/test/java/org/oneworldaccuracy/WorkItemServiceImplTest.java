@@ -1,8 +1,6 @@
 package org.oneworldaccuracy;
 
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperPrintManager;
-import net.sf.jasperreports.engine.PrintPageFormat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -14,7 +12,6 @@ import org.oneworldaccuracy.producer.WorkItemProducer;
 import org.oneworldaccuracy.repository.WorkItemRepository;
 import org.oneworldaccuracy.service.serviceImpl.WorkItemServiceImpl;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -53,23 +50,24 @@ class WorkItemServiceImplTest {
         verify(workItemRepository, times(1)).save(workItem);
     }
 
-//    @Test
-//    void CreateWorkItem_WithValidValue_ShouldSaveWorkItemAndSendToProducer() {
-//        // Arrange
-//        int value = 5;
-//        String expectedId = "1";
-//        URI expectedLocation = URI.create("/workItems/1");
-//
-//        // Act
-//        WorkItemResponse response = workItemService.CreateWorkItem(value).getResponse();
-//
-//        // Assert
-//        assertNotNull(response);
-//        assertEquals(expectedId, response.getId());
-//        assertEquals(expectedLocation, workItemService.CreateWorkItem(value).getLocation());
-//        verify(workItemRepository, times(1)).save(any(WorkItem.class));
-//        verify(workItemProducer, times(1)).sendWorkItem(any(WorkItem.class));
-//    }
+    @Test
+    void createWorkItem_ShouldSaveWorkItemAndReturnId() {
+        // Arrange
+        WorkItemServiceImpl workItemService = new WorkItemServiceImpl(workItemRepository, workItemProducer);
+        int value = 5;
+        WorkItem savedWorkItem = new WorkItem();
+        savedWorkItem.setId("12345");
+
+        when(workItemRepository.save(any(WorkItem.class))).thenReturn(savedWorkItem);
+
+        // Act
+        String result = workItemService.createWorkItem(value);
+
+        // Assert
+        assertEquals(savedWorkItem.getId(), result);
+        verify(workItemRepository, times(1)).save(any(WorkItem.class));
+        verify(workItemProducer, times(1)).sendWorkItem(savedWorkItem);
+    }
 
     @Test
     void CreateWorkItem_WithInvalidValue_ShouldThrowException() {
@@ -77,7 +75,7 @@ class WorkItemServiceImplTest {
         int value = 0;
 
         // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> workItemService.CreateWorkItem(value));
+        assertThrows(IllegalArgumentException.class, () -> workItemService.createWorkItem(value));
         verify(workItemRepository, never()).save(any(WorkItem.class));
         verify(workItemProducer, never()).sendWorkItem(any(WorkItem.class));
     }

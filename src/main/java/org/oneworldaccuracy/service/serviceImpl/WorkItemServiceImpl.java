@@ -3,7 +3,6 @@ package org.oneworldaccuracy.service.serviceImpl;
 import lombok.AllArgsConstructor;
 import net.sf.jasperreports.engine.*;
 import org.oneworldaccuracy.dto.ReportResponse;
-import org.oneworldaccuracy.dto.WorkItemResult;
 import org.oneworldaccuracy.dto.WorkItemResponse;
 import org.oneworldaccuracy.model.WorkItem;
 import org.oneworldaccuracy.producer.WorkItemProducer;
@@ -11,9 +10,7 @@ import org.oneworldaccuracy.repository.WorkItemRepository;
 import org.oneworldaccuracy.service.WorkItemService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.*;
 
 @Service
@@ -44,24 +41,16 @@ public class WorkItemServiceImpl implements WorkItemService {
     }
 
     @Override
-    public WorkItemResult CreateWorkItem(int value){
-        if (value < 1 || value > 10) {
-            throw new IllegalArgumentException("Work item value must be between 1 and 10.");
+    public String createWorkItem(int value){
+        if(value < 1 || value > 10){
+            throw new IllegalArgumentException("Invalid request");
         }
-        WorkItem workItem = new WorkItem(value);
-        workItemRepository.save(workItem);
-        workItemProducer.sendWorkItem(workItem);
-        String id = workItem.getId();
-
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(id)
-                .toUri();
-        WorkItemResponse response = new WorkItemResponse(id);
-        return WorkItemResult.builder()
-                .location(location)
-                .response(response)
-                .build();
+        WorkItem workItem = new WorkItem();
+        workItem.setValue(value);
+        workItem.setProcessed(false);
+        WorkItem savedWorkItem = workItemRepository.save(workItem);
+        workItemProducer.sendWorkItem(savedWorkItem);
+        return savedWorkItem.getId();
     }
 
     @Override

@@ -9,6 +9,7 @@ import org.oneworldaccuracy.service.WorkItemService;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,11 +27,18 @@ public class WorkItemController {
 
     private WorkItemService workItemService;
 
-    @PostMapping
+//    @PostMapping
+//    @ApiOperation(value = "Create a work item", notes = "Creates a new work item and returns its ID.")
+//    public ResponseEntity<WorkItemUniqueID> createWorkItem(@RequestBody WorkItemRequest request) {
+//        WorkItemResult workItemResult = workItemService.CreateWorkItem(request.getValue());
+//        return ResponseEntity.created(workItemResult.getLocation()).body(new WorkItemUniqueID(workItemResult.getResponse().getId()));
+//    }
+
+    @PostMapping("/")
     @ApiOperation(value = "Create a work item", notes = "Creates a new work item and returns its ID.")
-    public ResponseEntity<WorkItemUniqueID> createWorkItem(@RequestBody WorkItemRequest request) {
-        WorkItemResult workItemResult = workItemService.CreateWorkItem(request.getValue());
-        return ResponseEntity.created(workItemResult.getLocation()).body(new WorkItemUniqueID(workItemResult.getResponse().getId()));
+    public ResponseEntity<String> saveWorkItem(@RequestBody WorkItemRequest request){
+        return new ResponseEntity<>(workItemService.createWorkItem(
+                request.getValue()), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
@@ -52,9 +60,14 @@ public class WorkItemController {
     @GetMapping("/report")
     @ApiOperation(value = "Get work item report", notes = "Retrieves a report containing item values, item counts, and processed counts.")
     public ModelAndView getReport(ModelAndView modelAndView) {
-        modelAndView.setViewName("index");
-        modelAndView.addObject("report", workItemService.generateReport());
-        return modelAndView;
+        return new ModelAndView("index", "report", workItemService.generateReport());
+    }
+
+    @GetMapping("/api-report")
+    @ApiOperation(value = "Get work item report", notes = "Retrieves a report containing item values, item counts, and processed counts.")
+    public ResponseEntity<ReportResponse> getReport() {
+        ReportResponse response = workItemService.generateReport();
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/report/pdf")
