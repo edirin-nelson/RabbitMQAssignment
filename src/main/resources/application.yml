@@ -27,3 +27,9 @@ rabbitmq:
 #swagger settings
 application:
   version: v1
+
+#JasperReport Settings
+template:
+  name: Blank-report
+  category: normal
+  engine: book_template
