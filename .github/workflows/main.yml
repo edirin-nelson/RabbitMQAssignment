@@ -3,7 +3,7 @@ name: Build and Deploy Task to DockerHub
 on:
   push:
     branches:
-      - main
+      - master
 
 env:
   ASC_PACKAGE_PATH: ${{ github.workspace }}
