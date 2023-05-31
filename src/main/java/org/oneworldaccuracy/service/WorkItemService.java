@@ -1,5 +1,6 @@
 package org.oneworldaccuracy.service;
 
+import jakarta.xml.bind.JAXBException;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.oneworldaccuracy.dto.ReportResponse;
 import org.oneworldaccuracy.dto.WorkItemResponse;
@@ -18,6 +19,8 @@ public interface WorkItemService {
     String deleteWorkItem(String id);
 
     ReportResponse generateReport();
+
+    String generateReportXml() throws JAXBException;
 
     JasperPrint generateJasperPrint(ReportResponse report) throws Exception;
 }

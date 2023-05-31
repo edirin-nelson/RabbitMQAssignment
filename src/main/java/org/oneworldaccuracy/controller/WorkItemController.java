@@ -3,10 +3,10 @@ package org.oneworldaccuracy.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import jakarta.annotation.Resource;
+import jakarta.xml.bind.JAXBException;
 import lombok.AllArgsConstructor;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.oneworldaccuracy.dto.*;
-import org.oneworldaccuracy.model.WorkItem;
 import org.oneworldaccuracy.service.WorkItemService;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -34,18 +34,6 @@ public class WorkItemController {
         return ResponseEntity.created(workItemResult.getLocation()).body(new WorkItemUniqueID(workItemResult.getResponse().getId()));
     }
 
-//    @GetMapping("/{id}")
-//    @ApiOperation(value = "Get a work item", notes = "Retrieves a work item by its ID.")
-//    public ResponseEntity<WorkItemResponse> getWorkItem(@PathVariable String id) {
-//        WorkItem workItem = workItemService.getWorkItem(id);
-//        if (workItem == null) {
-//            return ResponseEntity.notFound().build();
-//        }
-//        WorkItemResponse response = new WorkItemResponse(workItem.getId(), workItem.getValue(),
-//                workItem.isProcessed(), workItem.getResult());
-//        return ResponseEntity.ok(response);
-//    }
-
     @GetMapping("/{id}")
     @ApiOperation(value = "Get a work item", notes = "Retrieves a work item by its ID.")
     public ResponseEntity<WorkItemResponse> getWorkItem(@PathVariable String id) {
@@ -62,20 +50,19 @@ public class WorkItemController {
         return workItemService.deleteWorkItem(id);
     }
 
-    @GetMapping("/report")
-    @ApiOperation(value = "Get work item report", notes = "Retrieves a report containing item counts and processed counts.")
-    public ResponseEntity<ReportResponse> getReport() {
-        ReportResponse response = workItemService.generateReport();
-        return ResponseEntity.ok(response);
+    @GetMapping(value = "/report", produces = MediaType.APPLICATION_XML_VALUE)
+    public ResponseEntity<String> getReport() throws JAXBException {
+        String xmlData = workItemService.generateReportXml();
+        return ResponseEntity.ok(xmlData);
     }
 
-    @GetMapping("/get-report")
-    @ApiOperation(value = "Get work item report", notes = "Retrieves a report containing item counts and processed counts.")
-    public String getReport(Model model) {
-        ReportResponse response = workItemService.generateReport();
-        model.addAttribute("report", response);
-        return "redirect: /index.html";
-    }
+//    @GetMapping("/get-report")
+//    @ApiOperation(value = "Get work item report", notes = "Retrieves a report containing item counts and processed counts.")
+//    public String getReport(Model model) {
+//        ReportResponse response = workItemService.generateReport();
+//        model.addAttribute("report", response);
+//        return "redirect: /index.html";
+//    }
 
     @GetMapping("/report/pdf")
     @ApiOperation(value = "Generate PDF report", notes = "Generates a PDF report based on the work item report.")

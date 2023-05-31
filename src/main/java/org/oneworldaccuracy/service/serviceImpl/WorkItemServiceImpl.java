@@ -1,5 +1,8 @@
 package org.oneworldaccuracy.service.serviceImpl;
 
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import lombok.AllArgsConstructor;
 import net.sf.jasperreports.engine.*;
 import org.oneworldaccuracy.dto.ReportResponse;
@@ -13,11 +16,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.StringWriter;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -98,25 +99,48 @@ public class WorkItemServiceImpl implements WorkItemService {
         // Retrieve all work items from the database
         List<WorkItem> workItems = workItemRepository.findAll();
 
-        // Initialize maps to store item counts and processed counts
-        Map<Integer, Integer> itemCounts = new HashMap<>();
-        Map<Integer, Integer> processedCounts = new HashMap<>();
+        // Initialize lists to store item values, item counts, and processed counts
+        List<Integer> workItemValues = new ArrayList<>();
+        List<Integer> itemCounts = new ArrayList<>();
+        List<Integer> processedCounts = new ArrayList<>();
 
         // Iterate through each work item
         for (WorkItem workItem : workItems) {
             int value = workItem.getValue();
 
-            // Update the item count in the itemCounts map
-            itemCounts.put(value, itemCounts.getOrDefault(value, 0) + 1);
+            // Update the item values, item counts, and processed counts lists
+            if (!workItemValues.contains(value)) {
+                workItemValues.add(value);
+                itemCounts.add(0);
+                processedCounts.add(0);
+            }
 
-            // If the work item is processed, update the processed count in the processedCounts map
+            int index = workItemValues.indexOf(value);
+            itemCounts.set(index, itemCounts.get(index) + 1);
+
             if (workItem.isProcessed()) {
-                processedCounts.put(value, processedCounts.getOrDefault(value, 0) + 1);
+                processedCounts.set(index, processedCounts.get(index) + 1);
             }
         }
 
-        // Create and return a new ReportResponse with the item counts and processed counts
-        return new ReportResponse(itemCounts, processedCounts);
+        // Create and return a new ReportResponse with the item values, item counts, and processed counts
+        return new ReportResponse(workItemValues, itemCounts, processedCounts);
+    }
+
+    @Override
+    public String generateReportXml() throws JAXBException {
+        ReportResponse reportResponse = generateReport();
+
+        // Convert ReportResponse to XML using JAXB
+        JAXBContext context = JAXBContext.newInstance(ReportResponse.class);
+        Marshaller marshaller = context.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+        StringWriter writer = new StringWriter();
+        marshaller.marshal(reportResponse, writer);
+
+        // Return the XML content as a string
+        return writer.toString();
     }
 
     @Override
