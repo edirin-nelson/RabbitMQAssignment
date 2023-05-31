@@ -2,17 +2,17 @@ package org.oneworldaccuracy.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import jakarta.annotation.Resource;
 import lombok.AllArgsConstructor;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.oneworldaccuracy.dto.*;
 import org.oneworldaccuracy.service.WorkItemService;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.io.ByteArrayInputStream;
 
@@ -51,18 +51,11 @@ public class WorkItemController {
 
     @GetMapping("/report")
     @ApiOperation(value = "Get work item report", notes = "Retrieves a report containing item values, item counts, and processed counts.")
-    public ResponseEntity<ReportResponse> getReport() {
-        ReportResponse response = workItemService.generateReport();
-        return ResponseEntity.ok(response);
+    public ModelAndView getReport(ModelAndView modelAndView) {
+        modelAndView.setViewName("index");
+        modelAndView.addObject("report", workItemService.generateReport());
+        return modelAndView;
     }
-
-//    @GetMapping("/get-report")
-//    @ApiOperation(value = "Get work item report", notes = "Retrieves a report containing item counts and processed counts.")
-//    public String getReport(Model model) {
-//        ReportResponse response = workItemService.generateReport();
-//        model.addAttribute("report", response);
-//        return "redirect: /index.html";
-//    }
 
     @GetMapping("/report/pdf")
     @ApiOperation(value = "Generate PDF report", notes = "Generates a PDF report based on the work item report.")
@@ -82,4 +75,3 @@ public class WorkItemController {
                 .body(resource);
     }
 }
-

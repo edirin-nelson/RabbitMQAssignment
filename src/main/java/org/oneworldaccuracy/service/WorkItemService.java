@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.Async;
 
 public interface WorkItemService {
     @Async
-    void processWorkItem(WorkItem workItem);
+    WorkItem processWorkItem(WorkItem workItem);
 
     WorkItemResult CreateWorkItem(int value);
 
