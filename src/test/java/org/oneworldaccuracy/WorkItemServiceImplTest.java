@@ -36,17 +36,18 @@ class WorkItemServiceImplTest {
     }
 
     @Test
-    void processWorkItem_ShouldCalculateSquareAndSaveWorkItem() {
+    void processWorkItem_ShouldCalculateSquareAndUpdateWorkItem() {
         // Arrange
-        WorkItem workItem = new WorkItem(5);
-        int expectedResult = 25;
+        WorkItemServiceImpl workItemService = new WorkItemServiceImpl(workItemRepository, null);
+        WorkItem workItem = new WorkItem();
+        workItem.setValue(5);
 
         // Act
         workItemService.processWorkItem(workItem);
 
         // Assert
-        assertEquals(expectedResult, workItem.getResult());
         assertTrue(workItem.isProcessed());
+        assertEquals(25, workItem.getResult());
         verify(workItemRepository, times(1)).save(workItem);
     }
 

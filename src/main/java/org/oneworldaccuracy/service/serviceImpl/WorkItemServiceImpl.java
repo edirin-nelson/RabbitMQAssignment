@@ -22,7 +22,7 @@ public class WorkItemServiceImpl implements WorkItemService {
 
     @Override
     @Async
-    public WorkItem processWorkItem(WorkItem workItem) {
+    public void processWorkItem(WorkItem workItem) {
         // Calculate the square of the work item value
         int value = workItem.getValue();
         int result = value * value;
@@ -37,7 +37,7 @@ public class WorkItemServiceImpl implements WorkItemService {
         // Update the work item with the processing result
         workItem.setResult(result);
         workItem.setProcessed(true);
-        return workItemRepository.save(workItem);
+        workItemRepository.save(workItem);
     }
 
     @Override

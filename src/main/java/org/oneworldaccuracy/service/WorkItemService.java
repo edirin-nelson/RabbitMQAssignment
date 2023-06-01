@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.Async;
 
 public interface WorkItemService {
     @Async
-    WorkItem processWorkItem(WorkItem workItem);
+    void processWorkItem(WorkItem workItem);
 
     String createWorkItem(int value);
 
