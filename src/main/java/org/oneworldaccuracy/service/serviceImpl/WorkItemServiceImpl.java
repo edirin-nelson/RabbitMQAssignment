@@ -41,9 +41,9 @@ public class WorkItemServiceImpl implements WorkItemService {
     }
 
     @Override
-    public String createWorkItem(int value){
+    public String createWorkItem(int value) {
         // Check if the value is within the valid range
-        if(value < 1 || value > 10){
+        if (value < 1 || value > 10) {
             throw new IllegalArgumentException("Invalid request");
         }
         // Create a new WorkItem instance
@@ -92,40 +92,78 @@ public class WorkItemServiceImpl implements WorkItemService {
         return "Work item with id: " + id + " not found.";
     }
 
-
-
-    @Override
     public ReportResponse generateReport() {
         // Retrieve all work items from the database
         List<WorkItem> workItems = workItemRepository.findAll();
 
-        // Initialize lists to store item values, item counts, and processed counts
-        List<Integer> workItemValues = new ArrayList<>();
-        List<Integer> itemCounts = new ArrayList<>();
-        List<Integer> processedCounts = new ArrayList<>();
+        // Create a map to store the item values, item counts, and processed counts
+        Map<Integer, Integer> itemCountsMap = new HashMap<>();
+        Map<Integer, Integer> processedCountsMap = new HashMap<>();
 
         // Iterate through each work item
         for (WorkItem workItem : workItems) {
             int value = workItem.getValue();
 
-            // Update the item values, item counts, and processed counts lists
-            if (!workItemValues.contains(value)) {
-                workItemValues.add(value);
-                itemCounts.add(0);
-                processedCounts.add(0);
-            }
+            // Update the item counts map
+            itemCountsMap.put(value, itemCountsMap.getOrDefault(value, 0) + 1);
 
-            int index = workItemValues.indexOf(value);
-            itemCounts.set(index, itemCounts.get(index) + 1);
-
+            // Update the processed counts map if the work item is processed
             if (workItem.isProcessed()) {
-                processedCounts.set(index, processedCounts.get(index) + 1);
+                processedCountsMap.put(value, processedCountsMap.getOrDefault(value, 0) + 1);
             }
         }
 
-        // Create and return a new ReportResponse with the item values, item counts, and processed counts
+        // Create lists to store the sorted item values, item counts, and processed counts
+        List<Integer> workItemValues = new ArrayList<>(itemCountsMap.keySet());
+        List<Integer> itemCounts = new ArrayList<>();
+        List<Integer> processedCounts = new ArrayList<>();
+
+        // Sort the item values in ascending order
+        Collections.sort(workItemValues);
+
+        // Populate the item counts and processed counts lists based on the sorted item values
+        for (int value : workItemValues) {
+            itemCounts.add(itemCountsMap.getOrDefault(value, 0));
+            processedCounts.add(processedCountsMap.getOrDefault(value, 0));
+        }
+
+        // Create and return a new ReportResponse with the sorted item values, item counts, and processed counts
         return new ReportResponse(workItemValues, itemCounts, processedCounts);
     }
+
+
+//    @Override
+//    public ReportResponse generateReport() {
+//        // Retrieve all work items from the database
+//        List<WorkItem> workItems = workItemRepository.findAll();
+//
+//        // Initialize lists to store item values, item counts, and processed counts
+//        List<Integer> workItemValues = new ArrayList<>();
+//        List<Integer> itemCounts = new ArrayList<>();
+//        List<Integer> processedCounts = new ArrayList<>();
+//
+//        // Iterate through each work item
+//        for (WorkItem workItem : workItems) {
+//            int value = workItem.getValue();
+//
+//            // Update the item values, item counts, and processed counts lists
+//            if (!workItemValues.contains(value)) {
+//                workItemValues.add(value);
+//                itemCounts.add(0);
+//                processedCounts.add(0);
+//            }
+//
+//            int index = workItemValues.indexOf(value);
+//            itemCounts.set(index, itemCounts.get(index) + 1);
+//
+//            if (workItem.isProcessed()) {
+//                processedCounts.set(index, processedCounts.get(index) + 1);
+//            }
+//        }
+//
+//        // Create and return a new ReportResponse with the item values, item counts, and processed counts
+//        return new ReportResponse(workItemValues, itemCounts, processedCounts);
+//    }
 
     @Override
     public JasperPrint generateJasperPrint(ReportResponse report) throws Exception {
