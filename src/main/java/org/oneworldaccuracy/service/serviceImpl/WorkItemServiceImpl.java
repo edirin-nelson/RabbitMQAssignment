@@ -42,41 +42,56 @@ public class WorkItemServiceImpl implements WorkItemService {
 
     @Override
     public String createWorkItem(int value){
+        // Check if the value is within the valid range
         if(value < 1 || value > 10){
             throw new IllegalArgumentException("Invalid request");
         }
+        // Create a new WorkItem instance
         WorkItem workItem = new WorkItem();
         workItem.setValue(value);
         workItem.setProcessed(false);
+        // Save the WorkItem to the repository
         WorkItem savedWorkItem = workItemRepository.save(workItem);
+        // Send the WorkItem to a WorkItemProducer
         workItemProducer.sendWorkItem(savedWorkItem);
+        // Return the ID of the saved WorkItem
         return savedWorkItem.getId();
     }
 
     @Override
     public WorkItemResponse getWorkItemById(String id) {
+        // Retrieve the WorkItem from the repository based on the provided ID
         WorkItem workItem = workItemRepository.findById(id).orElse(null);
+        // If the WorkItem is not found, return null
         if (workItem == null) {
             return null;
         }
+        // Create and return a WorkItemResponse object with the relevant information from the retrieved WorkItem
         return new WorkItemResponse(workItem.getId(), workItem.getValue(),
                 workItem.isProcessed(), workItem.getResult());
     }
 
     @Override
     public String deleteWorkItem(String id) {
+        // Retrieve the optional WorkItem from the repository based on the provided ID
         Optional<WorkItem> optionalWorkItem = workItemRepository.findById(id);
+        // If the optional WorkItem is present
         if (optionalWorkItem.isPresent()) {
+            // Get the WorkItem from the optional
             WorkItem workItem = optionalWorkItem.get();
+            // Check if the WorkItem is not yet processed
             if (!workItem.isProcessed()) {
+                // Delete the WorkItem from the repository
                 workItemRepository.deleteById(id);
                 return "Work item with id: " + id + " is deleted successfully.";
             } else {
                 return "Work item with id: " + id + " can't be deleted because it's already processed.";
             }
         }
+        // Return a message indicating that the WorkItem was not found
         return "Work item with id: " + id + " not found.";
     }
+
 
 
     @Override
