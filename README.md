@@ -26,7 +26,7 @@ Before running the application, ensure that you have the following:
 ## Building from GitHub
 Follow these steps to build and run the application from the source code on GitHub:
 
-1. Clone the repository: git clone <repository_url>
+1. Clone the repository: git clone rabbitmq-assignment
 
 2. Navigate to the project directory: cd spring-boot-work-item-processing
 3. Build the application using Maven: mvn clean package
