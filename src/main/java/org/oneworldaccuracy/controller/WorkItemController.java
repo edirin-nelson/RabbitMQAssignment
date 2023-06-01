@@ -70,6 +70,7 @@ public class WorkItemController {
     public ResponseEntity<Resource> generatePdfReport() throws Exception {
         // Generate the report data
         ReportResponse report = workItemService.generateReport();
+
         // Generate the JasperPrint object using the report data
         JasperPrint jasperPrint = workItemService.generateJasperPrint(report);
 
@@ -78,6 +79,7 @@ public class WorkItemController {
 
         // Create a Resource object from the PDF byte array
         Resource resource = (Resource) new InputStreamResource(new ByteArrayInputStream(pdfBytes));
+
         // Set the headers for the response
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=work-item-report.pdf");

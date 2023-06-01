@@ -2,6 +2,7 @@ package org.oneworldaccuracy.service.serviceImpl;
 
 import lombok.AllArgsConstructor;
 import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.oneworldaccuracy.dto.ReportResponse;
 import org.oneworldaccuracy.dto.WorkItemResponse;
 import org.oneworldaccuracy.model.WorkItem;
@@ -92,6 +93,7 @@ public class WorkItemServiceImpl implements WorkItemService {
         return "Work item with id: " + id + " not found.";
     }
 
+    @Override
     public ReportResponse generateReport() {
         // Retrieve all work items from the database
         List<WorkItem> workItems = workItemRepository.findAll();
@@ -135,15 +137,16 @@ public class WorkItemServiceImpl implements WorkItemService {
     public JasperPrint generateJasperPrint(ReportResponse report) throws Exception {
         // Create a map to hold the parameters required for the JasperReport
         Map<String, Object> parameters = new HashMap<>();
+        parameters.put("workItemValues", report.getWorkItemValues());
         parameters.put("itemCounts", report.getItemCounts());
         parameters.put("processedCounts", report.getProcessedCounts());
 
         // Load the JasperReport template file
         JasperReport jasperReport = JasperCompileManager.compileReport(getClass()
-                .getResourceAsStream("/static/Blank-report.jrxml"));
+                .getResourceAsStream("/static/new_template.jrxml"));
 
-        // Create an empty JRDataSource (JasperReports data source)
-        JRDataSource dataSource = new JREmptyDataSource();
+        // Create a JRBeanCollectionDataSource from the report response
+        JRDataSource dataSource = new JRBeanCollectionDataSource(Collections.singletonList(report));
 
         // Fill the JasperReport with data and return the generated JasperPrint object
         return JasperFillManager.fillReport(jasperReport, parameters, dataSource);
