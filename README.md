@@ -17,7 +17,7 @@ This is a Spring Boot application that processes and reports work items asynchro
 
 Before running the application, ensure that you have the following:
 
-- Java Development Kit (JDK) installed (version 8 or higher)
+- Java Development Kit (JDK) installed (version 17 or higher)
 - Apache Maven installed
 - RabbitMQ server running
 - MongoDB server running
