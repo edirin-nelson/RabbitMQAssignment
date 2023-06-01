@@ -131,40 +131,6 @@ public class WorkItemServiceImpl implements WorkItemService {
         return new ReportResponse(workItemValues, itemCounts, processedCounts);
     }
 
-
-//    @Override
-//    public ReportResponse generateReport() {
-//        // Retrieve all work items from the database
-//        List<WorkItem> workItems = workItemRepository.findAll();
-//
-//        // Initialize lists to store item values, item counts, and processed counts
-//        List<Integer> workItemValues = new ArrayList<>();
-//        List<Integer> itemCounts = new ArrayList<>();
-//        List<Integer> processedCounts = new ArrayList<>();
-//
-//        // Iterate through each work item
-//        for (WorkItem workItem : workItems) {
-//            int value = workItem.getValue();
-//
-//            // Update the item values, item counts, and processed counts lists
-//            if (!workItemValues.contains(value)) {
-//                workItemValues.add(value);
-//                itemCounts.add(0);
-//                processedCounts.add(0);
-//            }
-//
-//            int index = workItemValues.indexOf(value);
-//            itemCounts.set(index, itemCounts.get(index) + 1);
-//
-//            if (workItem.isProcessed()) {
-//                processedCounts.set(index, processedCounts.get(index) + 1);
-//            }
-//        }
-//
-//        // Create and return a new ReportResponse with the item values, item counts, and processed counts
-//        return new ReportResponse(workItemValues, itemCounts, processedCounts);
-//    }
-
     @Override
     public JasperPrint generateJasperPrint(ReportResponse report) throws Exception {
         // Create a map to hold the parameters required for the JasperReport
